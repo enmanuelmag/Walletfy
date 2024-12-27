@@ -20,6 +20,7 @@ export const EventSchema = z.object({
     .max(1_000_000, 'Amount must be at most 1000'),
   date: z.number(),
   type: EventOptionSchema,
+  attachment: z.string().optional(),
 });
 
 export type EventType = z.infer<typeof EventSchema>;

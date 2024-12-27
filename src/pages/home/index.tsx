@@ -48,7 +48,11 @@ const Home = () => {
 
   return (
     <div className="cd-mt-[1rem]">
-      {isLoading && <div>Loading...</div>}
+      {isLoading && (
+        <div className="cd-flex cd-justify-center cd-items-center cd-h-[10rem] cd-text-lg cd-font-semibold cd-text-gray-700">
+          Loading your events...
+        </div>
+      )}
 
       {!isLoading && months && Boolean(months?.length) && (
         <React.Fragment>

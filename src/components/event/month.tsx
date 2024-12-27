@@ -1,7 +1,10 @@
 import React from 'react';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 import { DATE_FORMAT } from '@constants/app';
+import { RoutesApp } from '@constants/routes';
+
 import { MonthType } from '@customTypes/month';
 
 import { $ } from '@utils/styles';
@@ -12,6 +15,8 @@ type MonthProps = {
 
 const MonthCard = (props: MonthProps) => {
   const { name, year, balance, events } = props.data;
+
+  const navigate = useNavigate();
 
   return (
     <article className={$('cd-p-[1rem] cd-flex')}>
@@ -27,14 +32,33 @@ const MonthCard = (props: MonthProps) => {
             </p>
           </section>
           <div className="cd-border-b cd-border-gray-200 cd-w-full cd-h-[1px] cd-mb-[0.5rem]" />
-          <section className="cd-px-[1rem]">
+          <section className="cd-px-[0.5rem]">
             {events.map((event, index) => (
               <React.Fragment key={index}>
                 <div
                   data-tooltip-place="bottom-start"
                   data-tooltip-id="tooltip-event"
-                  data-tooltip-content={event.description}
-                  className={$('cd-flex cd-justify-between cd-gap-x-[8rem]')}
+                  data-tooltip-html={`
+                    <div class="cd-flex cd-flex-col cd-justify-center cd-items-center cd-p-[0.5rem]">
+                      <p class="cd-text-sm">${event.description}</p>  
+                      ${
+                        event.attachment
+                          ? `<img src="${event.attachment}" alt="attachment" class="cd-mt-2 cd-w-20 cd-h-20" />`
+                          : ''
+                      }
+                    </div>
+                  `}
+                  className={$(
+                    'cd-flex cd-justify-between cd-gap-x-[8rem]',
+                    'hover:cd-bg-gray-100 cd-p-[0.5rem] cd-rounded-md'
+                  )}
+                  onClick={() => {
+                    if (
+                      confirm(`Do you want to edit the event "${event.name}"?`)
+                    ) {
+                      navigate(RoutesApp.EVENT_FORM.replace(':id', event.id));
+                    }
+                  }}
                 >
                   <div className="cd-flex cd-flex-col cd-text-base cd-text-gray-700">
                     <span className="cd-text-sm cd-text-gray-700">

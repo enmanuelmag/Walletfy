@@ -21,7 +21,7 @@ function Layout() {
           <span className="cd-text-violet-500 cd-text-lg">fy</span>
         </a>
       </header>
-      <main className="cd-w-full cd-px-[1rem] cd-pt-[4rem]">
+      <main className="cd-w-full cd-px-[4rem] cd-pt-[6rem]">
         <Outlet />
       </main>
     </section>
