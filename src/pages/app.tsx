@@ -6,6 +6,9 @@ import queryClient, { asyncStoragePersister } from '@api/datasource/query';
 import { RoutesApp } from '@constants/routes';
 
 import Home from '@pages/home';
+import FormEvent from '@pages/event/form';
+
+import Layout from '@components/layout';
 
 const App = () => {
   return (
@@ -19,7 +22,10 @@ const App = () => {
     >
       <BrowserRouter>
         <Routes>
-          <Route element={<Home />} path={RoutesApp.HOME} />
+          <Route element={<Layout />}>
+            <Route element={<Home />} path={RoutesApp.HOME} />
+            <Route element={<FormEvent />} path={RoutesApp.EVENT_FORM} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </PersistQueryClientProvider>
