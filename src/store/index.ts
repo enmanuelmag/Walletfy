@@ -20,7 +20,18 @@ export const useAppStore = create(
   persist<StoreState & Action>(
     (set) => ({
       ...initialState,
-      setTheme: (theme) => set({ theme }),
+      setTheme: (theme) =>
+        set(() => {
+          localStorage.setItem('theme', theme);
+
+          if (theme === 'dark') {
+            document.body.classList.add('cd-dark');
+          } else {
+            document.body.classList.remove('cd-dark');
+          }
+
+          return { theme };
+        }),
     }),
     {
       name: `storage-base-${VERSION_STORAGE}`,

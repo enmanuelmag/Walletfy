@@ -119,7 +119,7 @@ const FormEvent = () => {
   return (
     <div className="cd-mt-[2rem] cd-flex cd-flex-col cd-items-center">
       {isLoadingQuery && (
-        <div className="cd-mt-[1rem] cd-text-lg cd-font-semibold cd-text-gray-800">
+        <div className="cd-mt-[1rem] cd-text-lg cd-font-semibold cd-text-gray-800 dark:cd-text-gray-300">
           Loading...
         </div>
       )}
@@ -139,7 +139,7 @@ const FormEvent = () => {
             }
           })}
         >
-          <h1 className="cd-mb-[1rem] ">
+          <h1 className="cd-mb-[1rem] dark:cd-text-gray-200">
             {mode === 'edit' ? 'Edit' : 'Create'} event
           </h1>
           <Controller
@@ -222,7 +222,7 @@ const FormEvent = () => {
           />
 
           <button
-            className="cd-mt-4 cd-py-2 cd-px-4 cd-bg-blue-500 cd-text-white cd-rounded-md hover:cd-bg-blue-600"
+            className="cd-mt-4 cd-py-2 cd-px-4 cd-bg-violet-500 cd-text-white cd-rounded-md hover:cd-bg-violet-600"
             type="submit"
           >
             {isSubmitting ? 'Submitting...' : 'Submit'}

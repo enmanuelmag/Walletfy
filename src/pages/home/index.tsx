@@ -49,7 +49,7 @@ const Home = () => {
   return (
     <div className="cd-mt-[1rem]">
       {isLoading && (
-        <div className="cd-flex cd-justify-center cd-items-center cd-h-[10rem] cd-text-lg cd-font-semibold cd-text-gray-700">
+        <div className="cd-flex cd-justify-center cd-items-center cd-h-[10rem] cd-text-lg cd-font-semibold cd-text-gray-700 dark:cd-text-gray-300">
           Loading your events...
         </div>
       )}
@@ -57,12 +57,12 @@ const Home = () => {
       {!isLoading && months && Boolean(months?.length) && (
         <React.Fragment>
           <div className="cd-flex cd-justify-between cd-items-center">
-            <p className="cd-text-lg cd-font-semibold cd-text-gray-800">
+            <p className="cd-text-lg cd-font-semibold cd-text-gray-800 dark:cd-text-gray-200">
               You have {events?.length} events in {months.length} months
             </p>
             <a
               href={RoutesApp.EVENT_FORM.replace(':id?', '')}
-              className="cd-py-[0.5rem] cd-px-[1rem] cd-bg-blue-500 cd-text-white cd-rounded-md cd-shadow-lg hover:cd-bg-blue-600"
+              className="cd-py-[0.5rem] cd-px-[1rem] cd-bg-violet-500 cd-text-white cd-rounded-md cd-shadow-lg hover:cd-bg-violet-600"
             >
               Add Event
             </a>
