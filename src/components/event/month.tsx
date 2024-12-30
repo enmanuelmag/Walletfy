@@ -14,7 +14,7 @@ type MonthProps = {
 };
 
 const MonthCard = (props: MonthProps) => {
-  const { name, year, balance, events } = props.data;
+  const { name, year, flow, events } = props.data;
 
   const navigate = useNavigate();
 
@@ -98,7 +98,7 @@ const MonthCard = (props: MonthProps) => {
         <footer className={$('cd-flex cd-flex-col cd-gap-y-[0.1rem]')}>
           <div className="cd-border-b cd-border-gray-200 cd-w-full cd-h-[1px] cd-my-[0.5rem] dark:cd-border-zinc-500" />
           <div className="cd-px-[1rem] cd-pb-[1rem]">
-            {Object.keys(balance).map((key, index) => (
+            {Object.keys(flow).map((key, index) => (
               <div
                 key={index}
                 className={$(
@@ -109,7 +109,7 @@ const MonthCard = (props: MonthProps) => {
                   {key}
                 </p>
                 <p className=" cd-text-gray-700 dark:cd-text-gray-200">
-                  ${balance[key as keyof typeof balance]}
+                  ${flow[key as keyof typeof flow]}
                 </p>
               </div>
             ))}

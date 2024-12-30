@@ -5,7 +5,7 @@ const QKeys = {
   UPDATE_EVENT: 'UPDATE_EVENT',
   DELETE_EVENT: 'DELETE_EVENT',
   //Month
-  BUILD_MONTHS: 'BUILD_MONTHS',
+  BUILD_MONTHS: 'BUILD_MONTHS-V2',
 };
 
 export default QKeys;

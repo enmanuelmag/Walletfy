@@ -34,6 +34,7 @@ const Home = () => {
     enabled: Boolean(eventsQuery.data),
     queryKey: [QKeys.BUILD_MONTHS, JSON.stringify(eventsQuery.data)],
     queryFn: async ({ queryKey }) => {
+      console.log('queryKey', queryKey);
       const [, events] = queryKey;
       const response = buildMonths(JSON.parse(events));
 

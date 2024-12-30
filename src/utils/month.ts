@@ -25,6 +25,7 @@ export const buildMonths = (events?: EventType[]) => {
   }, {} as Record<string, EventType[]>);
 
   //build months
+
   for (const key in eventsByMonth) {
     const [monthName, year] = key.split('-');
 
@@ -46,13 +47,29 @@ export const buildMonths = (events?: EventType[]) => {
       month: moment().month(monthName).month() + 1,
       year: Number(year),
       events,
-      balance: {
-        balance: total,
+      flow: {
         income: balance.income,
         expense: balance.expense,
+        monthly: total,
+        global: 0,
       },
     });
   }
 
-  return months.sort((a, b) => a.year - b.year);
+  const monthsSorted = months.sort((a, b) => b.month - a.month);
+  let idx = 0;
+
+  for (const month of monthsSorted) {
+    const prevMonth = monthsSorted[idx - 1];
+
+    if (prevMonth) {
+      month.flow.global = prevMonth.flow.global + month.flow.monthly;
+    } else {
+      month.flow.global = month.flow.monthly;
+    }
+
+    idx++;
+  }
+
+  return monthsSorted;
 };

@@ -6,10 +6,11 @@ export const MonthSchema = z.object({
   month: z.number(),
   year: z.number(),
   events: z.array(EventSchema),
-  balance: z.object({
+  flow: z.object({
     income: z.number(),
     expense: z.number(),
-    balance: z.number(),
+    monthly: z.number(),
+    global: z.number(),
   }),
 });
 
