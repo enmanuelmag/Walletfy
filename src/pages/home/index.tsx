@@ -30,6 +30,7 @@ const Home = () => {
     MonthType[],
     [string, string]
   >({
+    refetchOnMount: true,
     enabled: Boolean(eventsQuery.data),
     queryKey: [QKeys.BUILD_MONTHS, JSON.stringify(eventsQuery.data)],
     queryFn: async ({ queryKey }) => {

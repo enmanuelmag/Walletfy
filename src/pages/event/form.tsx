@@ -22,6 +22,7 @@ import moment from 'moment';
 import { isLoadingMutation, isLoadingOrRefetchQuery } from '@utils/network';
 import { RoutesApp } from '@constants/routes';
 import FileInput from '@components/form/File';
+import queryClient from '@api/datasource/query';
 
 const INITIAL_EVENT: EventCreateType = {
   name: '',
@@ -68,6 +69,17 @@ const FormEvent = () => {
     mutationFn: async (data) => {
       const response = await DataRepo.createEvent(data);
 
+      queryClient.invalidateQueries({
+        queryKey: [QKeys.GET_EVENTS],
+        refetchType: 'all',
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QKeys.GET_EVENT, id],
+        refetchType: 'all',
+        exact: true,
+      });
+
       return response;
     },
     onSettled: (_, error) => {
@@ -86,6 +98,17 @@ const FormEvent = () => {
     {
       mutationFn: async (data) => {
         const response = await DataRepo.updateEvent(data);
+
+        queryClient.invalidateQueries({
+          queryKey: [QKeys.GET_EVENTS],
+          refetchType: 'all',
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: [QKeys.GET_EVENT, id],
+          refetchType: 'all',
+          exact: true,
+        });
 
         return response;
       },

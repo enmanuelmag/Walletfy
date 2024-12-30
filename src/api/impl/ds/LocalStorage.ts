@@ -122,7 +122,12 @@ class LocalStorageDS extends DataDS {
 
       const newEvents = [...events];
 
-      newEvents[eventIndex] = event;
+      newEvents[eventIndex] = {
+        ...newEvents[eventIndex],
+        ...event,
+      };
+
+      console.log('Event updated', newEvents[eventIndex]);
 
       localStorage.setItem(EVENTS_KEY, JSON.stringify(newEvents));
 
