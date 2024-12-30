@@ -12,9 +12,12 @@ function Layout() {
   const { theme, setTheme } = useAppStore();
 
   React.useEffect(() => {
-    const themeSelected = localStorage.getItem('theme') as 'light' | 'dark';
+    const themeSelected = localStorage.getItem('theme') as
+      | 'light'
+      | 'dark'
+      | null;
 
-    setTheme(themeSelected);
+    setTheme(themeSelected || 'light');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
