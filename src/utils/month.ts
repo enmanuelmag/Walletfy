@@ -1,9 +1,17 @@
-import { EventType } from '@customTypes/event';
-import { MonthType } from '@customTypes/month';
 import moment from 'moment';
 
-export const buildMonths = (events?: EventType[]) => {
+import { EventType } from '@customTypes/event';
+import { MonthType } from '@customTypes/month';
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const buildMonths = async (
+  initialBalance: number,
+  events?: EventType[]
+) => {
   const months: MonthType[] = [];
+
+  await sleep(1000);
 
   if (!events?.length) return months;
 
@@ -65,7 +73,7 @@ export const buildMonths = (events?: EventType[]) => {
     if (prevMonth) {
       month.flow.global = prevMonth.flow.global + month.flow.monthly;
     } else {
-      month.flow.global = month.flow.monthly;
+      month.flow.global = month.flow.monthly + initialBalance;
     }
 
     idx++;
