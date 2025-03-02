@@ -10,6 +10,8 @@ abstract class DataDS {
   abstract deleteEvent(id: string): Promise<boolean>;
 
   abstract getEvent(id: string): Promise<EventType>;
+
+  abstract askModel(prompt: string): Promise<string>;
 }
 
 export default DataDS;

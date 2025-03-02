@@ -1,5 +1,10 @@
 import moment from 'moment';
 import { v4 as uuid } from 'uuid';
+import {
+  ChatCompletionMessageParam,
+  CreateMLCEngine,
+  MLCEngine,
+} from '@mlc-ai/web-llm';
 
 import DataDS from '@api/domain/ds/DataDS';
 
@@ -7,7 +12,7 @@ import { EventType, EventCreateType } from '@customTypes/event';
 
 const EVENTS_KEY = 'events';
 
-const sleep = (ms = 1500) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const defaultEvents: EventType[] = [
   {
@@ -61,6 +66,8 @@ const defaultEvents: EventType[] = [
 ];
 
 class LocalStorageDS extends DataDS {
+  engine: MLCEngine | null = null;
+
   constructor() {
     super();
 
@@ -69,6 +76,8 @@ class LocalStorageDS extends DataDS {
     if (!eventsRaw) {
       localStorage.setItem(EVENTS_KEY, JSON.stringify(defaultEvents));
     }
+
+    this.loadModel();
   }
 
   loadEvents(): EventType[] {
@@ -81,6 +90,54 @@ class LocalStorageDS extends DataDS {
     } catch (error) {
       console.error('Error loading events', error);
       throw new Error('Error loading events');
+    }
+  }
+
+  async loadModel() {
+    this.engine = await CreateMLCEngine('Llama-3.1-8B-Instruct-q4f32_1-MLC', {
+      initProgressCallback: (progress) => {
+        console.log('Progress:', progress);
+      },
+    });
+  }
+
+  parseDataEvents() {
+    const eventsString = this.loadEvents()
+      .map(
+        (event) =>
+          `${event.name} (${event.description}) is a ${event.type} with value ${
+            event.amount
+          } and happens on ${moment(event.date * 1000).format('YYYY-MM-DD')}`
+      )
+      .join('\n');
+
+    return eventsString;
+  }
+
+  async askModel(prompt: string) {
+    if (!this.engine) {
+      throw new Error('Model not loaded');
+    }
+
+    const messages: ChatCompletionMessageParam[] = [
+      {
+        role: 'system',
+        content: `You are a agent that must answer to the user information about his events of expenses and incomes The user events are:\n${this.parseDataEvents()}`,
+      },
+
+      { role: 'user', content: prompt },
+    ];
+
+    try {
+      const response = await this.engine.chat.completions.create({
+        messages,
+        frequency_penalty: 1,
+      });
+
+      return response.choices[0].message.content ?? 'No response';
+    } catch (error) {
+      console.error('Error asking model', error);
+      throw new Error('Error asking model');
     }
   }
 

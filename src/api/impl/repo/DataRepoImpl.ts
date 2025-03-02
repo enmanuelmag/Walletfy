@@ -28,6 +28,10 @@ class DataRepoImpl {
   async getEvent(id: string): Promise<EventType> {
     return this.data.getEvent(id);
   }
+
+  async askModel(prompt: string): Promise<string> {
+    return this.data.askModel(prompt);
+  }
 }
 
 export default DataRepoImpl;
