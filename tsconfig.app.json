@@ -34,7 +34,8 @@
       "@pages/*": ["src/pages/*"],
       "@assets/*": ["src/assets/*"],
       "@customTypes/*": ["src/types/*"],
-      "@store/*": ["src/store/*"]
+      "@store/*": ["src/store/*"],
+      "@services/*": ["src/services/*"]
     }
   },
   "include": ["src"]

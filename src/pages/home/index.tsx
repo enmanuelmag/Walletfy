@@ -2,20 +2,21 @@ import React from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import DataRepo from '@api/datasource';
+import { RoutesApp } from '@constants/routes';
 
 import { EventType } from '@customTypes/event';
 import { MonthType } from '@customTypes/month';
 
 import QKeys from '@constants/query';
 
+import { askToModel } from '@services/main';
+
 import { buildMonths } from '@utils/month';
 import { isLoadingOrRefetchQuery } from '@utils/network';
 
+import Input from '@components/form/Input';
 import MonthCard from '@components/event/month';
 import NumberInput from '@components/form/Number';
-
-import { RoutesApp } from '@constants/routes';
-import Input from '@components/form/Input';
 
 const Home = () => {
   const [initialBalance, setInitialBalance] = React.useState(0);
@@ -47,10 +48,9 @@ const Home = () => {
   });
 
   const askMutation = useMutation<string, Error, string, string>({
+    retry: false,
     mutationFn: async (prompt) => {
-      const response = await DataRepo.askModel(prompt);
-
-      return response;
+      return askToModel(prompt);
     },
     onSettled: (_, error) => {
       if (error) {

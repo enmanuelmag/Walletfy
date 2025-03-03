@@ -9,6 +9,14 @@ class DataRepoImpl {
     this.data = data;
   }
 
+  loadEvents(): EventType[] {
+    return this.data.loadEvents();
+  }
+
+  parseDataEvents(): string {
+    return this.data.parseDataEvents();
+  }
+
   async getEvents(): Promise<EventType[]> {
     return this.data.getEvents();
   }
@@ -29,9 +37,9 @@ class DataRepoImpl {
     return this.data.getEvent(id);
   }
 
-  async askModel(prompt: string): Promise<string> {
-    return this.data.askModel(prompt);
-  }
+  // async askModel(prompt: string): Promise<string> {
+  //   return this.data.askModel(prompt);
+  // }
 }
 
 export default DataRepoImpl;

@@ -77,7 +77,7 @@ class LocalStorageDS extends DataDS {
       localStorage.setItem(EVENTS_KEY, JSON.stringify(defaultEvents));
     }
 
-    this.loadModel();
+    //this.loadModel();
   }
 
   loadEvents(): EventType[] {
