@@ -1,6 +1,10 @@
 import type { EventCreateType, EventType } from '@customTypes/event';
 
 abstract class DataDS {
+  abstract percentageModel: number;
+
+  abstract getPercentage(): number;
+
   abstract loadEvents(): EventType[];
 
   abstract parseDataEvents(): string;
@@ -15,7 +19,7 @@ abstract class DataDS {
 
   abstract getEvent(id: string): Promise<EventType>;
 
-  //abstract askModel(prompt: string): Promise<string>;
+  abstract askModel(prompt: string): Promise<string>;
 }
 
 export default DataDS;

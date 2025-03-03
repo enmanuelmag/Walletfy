@@ -6,6 +6,9 @@ const QKeys = {
   DELETE_EVENT: 'DELETE_EVENT',
   //Month
   BUILD_MONTHS: 'BUILD_MONTHS-V2',
+  //Ask
+  GET_MODEL_STATUS: 'GET_MODEL_STATUS',
+  ASK_MODEL: 'ASK_MODEL',
 };
 
 export default QKeys;

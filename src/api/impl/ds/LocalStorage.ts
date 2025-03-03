@@ -2,6 +2,7 @@ import moment from 'moment';
 import { v4 as uuid } from 'uuid';
 import {
   ChatCompletionMessageParam,
+  deleteModelAllInfoInCache,
   CreateMLCEngine,
   MLCEngine,
 } from '@mlc-ai/web-llm';
@@ -9,6 +10,9 @@ import {
 import DataDS from '@api/domain/ds/DataDS';
 
 import { EventType, EventCreateType } from '@customTypes/event';
+import { LLM_MODEL } from '@constants/app';
+import queryClient from '@api/datasource/query';
+import QKeys from '@constants/query';
 
 const EVENTS_KEY = 'events';
 
@@ -67,6 +71,7 @@ const defaultEvents: EventType[] = [
 
 class LocalStorageDS extends DataDS {
   engine: MLCEngine | null = null;
+  percentageModel: number;
 
   constructor() {
     super();
@@ -77,7 +82,12 @@ class LocalStorageDS extends DataDS {
       localStorage.setItem(EVENTS_KEY, JSON.stringify(defaultEvents));
     }
 
-    //this.loadModel();
+    this.percentageModel = 0;
+    this.loadModel();
+  }
+
+  getPercentage(): number {
+    return this.percentageModel;
   }
 
   loadEvents(): EventType[] {
@@ -94,9 +104,18 @@ class LocalStorageDS extends DataDS {
   }
 
   async loadModel() {
-    this.engine = await CreateMLCEngine('Llama-3.1-8B-Instruct-q4f32_1-MLC', {
+    await deleteModelAllInfoInCache(LLM_MODEL);
+
+    this.engine = await CreateMLCEngine(LLM_MODEL, {
       initProgressCallback: (progress) => {
-        console.log('Progress:', progress);
+        console.log('[DS] Progress:', progress.progress, progress.text);
+
+        this.percentageModel = progress.progress;
+
+        queryClient.refetchQueries({
+          queryKey: [QKeys.GET_MODEL_STATUS],
+          exact: true,
+        });
       },
     });
   }
@@ -130,8 +149,9 @@ class LocalStorageDS extends DataDS {
 
     try {
       const response = await this.engine.chat.completions.create({
+        frequency_penalty: 1.2,
+        max_tokens: 256,
         messages,
-        frequency_penalty: 1,
       });
 
       return response.choices[0].message.content ?? 'No response';

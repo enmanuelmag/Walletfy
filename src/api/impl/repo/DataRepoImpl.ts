@@ -9,6 +9,10 @@ class DataRepoImpl {
     this.data = data;
   }
 
+  getPercentage(): number {
+    return this.data.getPercentage();
+  }
+
   loadEvents(): EventType[] {
     return this.data.loadEvents();
   }
@@ -37,9 +41,9 @@ class DataRepoImpl {
     return this.data.getEvent(id);
   }
 
-  // async askModel(prompt: string): Promise<string> {
-  //   return this.data.askModel(prompt);
-  // }
+  async askModel(prompt: string): Promise<string> {
+    return this.data.askModel(prompt);
+  }
 }
 
 export default DataRepoImpl;

@@ -9,8 +9,6 @@ import { MonthType } from '@customTypes/month';
 
 import QKeys from '@constants/query';
 
-import { askToModel } from '@services/main';
-
 import { buildMonths } from '@utils/month';
 import { isLoadingOrRefetchQuery } from '@utils/network';
 
@@ -20,6 +18,41 @@ import NumberInput from '@components/form/Number';
 
 const Home = () => {
   const [initialBalance, setInitialBalance] = React.useState(0);
+
+  // const [percentage, setPercentage] = React.useState(0);
+  // const [modelError, setModelError] = React.useState<Error | null>(null);
+
+  const percentageQuery = useQuery({
+    queryKey: [QKeys.GET_MODEL_STATUS],
+    initialData: 0,
+    queryFn: () => {
+      console.log('Checking model status V2');
+      return DataRepo.getPercentage();
+    },
+  });
+
+  // React.useEffect(() => {
+  //   const observer = new QueryObserver(queryClient, {
+  //     queryKey: [QKeys.GET_MODEL_STATUS],
+  //     queryFn: () => {
+  //       console.log('Checking model status');
+  //       return DataRepo.getPercentage();
+  //     },
+  //   });
+
+  //   const unsubscribe = observer.subscribe((result) => {
+  //     if (result.data) {
+  //       setPercentage(result.data);
+  //       setModelError(null);
+  //     } else if (result.error) {
+  //       setModelError(result.error);
+  //     }
+  //   });
+
+  //   return () => {
+  //     unsubscribe();
+  //   };
+  // }, []);
 
   const eventsQuery = useQuery<EventType[], Error>({
     queryKey: [QKeys.GET_EVENTS],
@@ -50,7 +83,7 @@ const Home = () => {
   const askMutation = useMutation<string, Error, string, string>({
     retry: false,
     mutationFn: async (prompt) => {
-      return askToModel(prompt);
+      return DataRepo.askModel(prompt);
     },
     onSettled: (_, error) => {
       if (error) {
@@ -117,7 +150,7 @@ const Home = () => {
           </React.Fragment>
         )}
 
-        {!isLoading && (
+        {!isLoading && percentageQuery.data === 1 && (
           <section className="cd-mt-8">
             <form
               className="cd-flex cd-flex-row cd-items-end"
@@ -161,6 +194,24 @@ const Home = () => {
               )}
             </div>
           </section>
+        )}
+
+        {percentageQuery.data < 1 && (
+          <div
+            className="
+          cd-mt-4 cd-text-lg cd-font-semibold cd-text-gray-800 dark:cd-text-gray-200
+          cd-border cd-border-gray-300 cd-rounded-md cd-shadow-sm cd-p-4
+          cd-bg-white dark:cd-bg-zinc-800 cd-text-center
+          "
+          >
+            Loading model: {(percentageQuery.data * 100).toFixed(2)}%
+          </div>
+        )}
+
+        {percentageQuery.error && (
+          <div className="cd-mt-4 cd-text-lg cd-font-semibold cd-text-red-500">
+            {percentageQuery.error.message}
+          </div>
         )}
       </div>
     </div>
