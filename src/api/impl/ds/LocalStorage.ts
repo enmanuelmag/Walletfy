@@ -3,7 +3,8 @@ import { v4 as uuid } from 'uuid';
 import {
   ChatCompletionMessageParam,
   deleteModelAllInfoInCache,
-  CreateMLCEngine,
+  deleteModelWasmInCache,
+  deleteModelInCache,
   MLCEngine,
 } from '@mlc-ai/web-llm';
 
@@ -105,12 +106,35 @@ class LocalStorageDS extends DataDS {
 
   async loadModel() {
     await deleteModelAllInfoInCache(LLM_MODEL);
+    await deleteModelWasmInCache(LLM_MODEL);
+    await deleteModelInCache(LLM_MODEL);
 
-    this.engine = await CreateMLCEngine(LLM_MODEL, {
-      initProgressCallback: (progress) => {
-        console.log('[DS] Progress:', progress.progress, progress.text);
+    // this.engine = await CreateMLCEngine(LLM_MODEL, {
+    //   initProgressCallback: (data) => {
+    //     console.log('[DS] Progress:', data.progress, data.text);
 
-        this.percentageModel = progress.progress;
+    //     if (data.progress < 1) {
+    //       this.percentageModel = data.progress;
+    //     } else if (data.text.includes('Finish')) {
+    //       this.percentageModel = data.progress;
+    //     }
+
+    //     queryClient.refetchQueries({
+    //       queryKey: [QKeys.GET_MODEL_STATUS],
+    //       exact: true,
+    //     });
+    //   },
+    // });
+
+    this.engine = new MLCEngine({
+      initProgressCallback: (data) => {
+        console.log('[DS] Progress:', data.progress, data.text);
+
+        if (data.progress < 1) {
+          this.percentageModel = data.progress;
+        } else if (data.text.includes('Finish')) {
+          this.percentageModel = data.progress;
+        }
 
         queryClient.refetchQueries({
           queryKey: [QKeys.GET_MODEL_STATUS],
@@ -118,17 +142,23 @@ class LocalStorageDS extends DataDS {
         });
       },
     });
+
+    await this.engine.reload(LLM_MODEL);
   }
 
   parseDataEvents() {
     const eventsString = this.loadEvents()
       .map(
         (event) =>
-          `${event.name} (${event.description}) is a ${event.type} with value ${
-            event.amount
-          } and happens on ${moment(event.date * 1000).format('YYYY-MM-DD')}`
+          `${event.name} (${event.description}) is a ${
+            event.type
+          } with amount of ${event.amount} and happens on ${moment(
+            event.date * 1000
+          ).format('YYYY-MM-DD')}`
       )
       .join('\n');
+
+    console.log(eventsString);
 
     return eventsString;
   }
@@ -141,7 +171,7 @@ class LocalStorageDS extends DataDS {
     const messages: ChatCompletionMessageParam[] = [
       {
         role: 'system',
-        content: `You are a agent that must answer to the user information about his events of expenses and incomes The user events are:\n${this.parseDataEvents()}`,
+        content: `You are a agent that must answer to the user information about his events of expenses and incomes The user events are:\n${this.parseDataEvents()}. Just answer the user questions based on this information. Be brief and concise.`,
       },
 
       { role: 'user', content: prompt },
@@ -150,7 +180,6 @@ class LocalStorageDS extends DataDS {
     try {
       const response = await this.engine.chat.completions.create({
         frequency_penalty: 1.2,
-        max_tokens: 256,
         messages,
       });
 
